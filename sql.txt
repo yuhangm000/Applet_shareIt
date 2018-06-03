@@ -1,0 +1,24 @@
+create table user(
+id int primary key auto_increment,
+name varchar(30),
+assign_time datetime DEFAULT now()
+);
+
+
+create table article(
+id int primary key auto_increment,
+user_id int,
+title varchar(100) NOT NULL,
+content varchar(100) NOT NULL,
+create_time datetime DEFAULT now(),
+FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
+
+create table reader(
+article_id int,
+user_id int,
+FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE,
+FOREIGN KEY(article_id) REFERENCES article(id) ON DELETE CASCADE,
+PRIMARY KEY(article_id,user_id)
+);
