@@ -15,6 +15,10 @@ router.post('/search_user', function(req, res, next) {
 	API.search_user(req, res)
 });
 
+router.post('/insert_user', function(req, res, next) {
+        API.insert_user(req, res)
+});
+
 router.post('/share_article', function(req, res, next) {
 	API.share_article(req, res)
 });
