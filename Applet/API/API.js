@@ -22,12 +22,12 @@ function search_article(req, res){
 
 
 function search_user(req, res){
-    if(!req.body.user_id){
+    if(!req.body.author_id){
         res.json({'msg': 'parameter error'});
     }
     else{
         var sql = 'select article.id,article.title,user.name as author,article.create_time from article, user where article.user_id=user.id and article.user_id=?';
-        db.queryArgs(sql, req.body.user_id, function(err, result) {
+        db.queryArgs(sql, req.body.author_id, function(err, result) {
                 if(result.length){
                     db.doReturn(res, 200, result);
                 }
