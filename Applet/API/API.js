@@ -10,7 +10,7 @@ function search_article(req, res){
         var sql = 'select article.id,article.title,user.name as author,article.create_time from article, user where article.user_id=user.id and article.id=?';
         db.queryArgs(sql, req.body.article_id, function(err, result) {
                 if(result.length){
-                    db.doReturn(res, 200, result[0]);
+                    db.doReturn(res, 200, result);
                 }
                 else{
                     db.doReturn(res, 'this article does not exist', result);
@@ -100,6 +100,22 @@ function create_article(req, res){
         );
     }
 }
+
+
+function insert_user(req, res){
+    params = req.body;
+    if(!params.user_id || !params.user_name)
+        res.json({'msg': 'parameter error'});
+    else{
+        var sql = 'insert into user(id,name) values(?,?)';
+        var attrs = [params.user_id, params.user_name];
+        db.queryArgs(sql, attrs, function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
+    }
+}
+
 
 
 function file_to_text(req, res){
