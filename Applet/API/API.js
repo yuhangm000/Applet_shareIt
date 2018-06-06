@@ -102,6 +102,22 @@ function create_article(req, res){
 }
 
 
+function insert_user(req, res){
+    params = req.body;
+    if(!params.user_id || !params.user_name)
+        res.json({'msg': 'parameter error'});
+    else{
+        var sql = 'insert into user(id,name) values(?,?)';
+        var attrs = [params.user_id, params.user_name];
+        db.queryArgs(sql, attrs, function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
+    }
+}
+
+
+
 function file_to_text(req, res){
     res.json({'msg': 'uncomplete'});
 }
