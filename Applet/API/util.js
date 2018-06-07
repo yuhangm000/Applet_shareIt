@@ -7,7 +7,7 @@ function insert(req, res, open_id){
     var sql = 'insert into user(id,name,head) values(?,?,?)';
     var attrs = [open_id, params.user_name, params.avatarUrl];
     db.queryArgs(sql, attrs, function(err, result) {
-        db.doReturn(res, 200, result);
+        db.doReturn(res, 200, {'open_id':open_id});
     });
 }
 
