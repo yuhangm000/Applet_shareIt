@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style type="text/css">
+#content{
+    width:100%;
+    height:100%;
+}
+
+#myform{
+	width:80%;
+    height:100%;
+    margin:20% auto;
+    text-align:center;
+}
+#file{
+	margin:10px auto;
+}
+#submit{
+	margin:10px auto;
+}
+
+</style>
+</head>
+<body>
+	<div id="content">
+		<form id="myform" action="/file_to_text" method="post" enctype="multipart/form-data">
+		<input id="file" name="file" type="file"></input>
+		<br>
+		<input id="submit" type="submit" value="上传文件"></input>
+		</form>
+	</div>
+	<b>asdf</b>
+</body>
+</html>

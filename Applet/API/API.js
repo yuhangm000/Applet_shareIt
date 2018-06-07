@@ -1,4 +1,5 @@
 var db = require('../DAO/Connection');
+var Utils = require('./util');
 
 
 // return article_id, article_name, author, create_time
@@ -41,16 +42,21 @@ function search_user(req, res){
 
 
 function share_article(req, res){
-    params = req.body;
-    if(!params.author_id || !params.article_id)
+    var params = req.body;
+    if(!params.user_id || !params.article_id)
         res.json({'msg': 'parameter error'});
     else{
-        res.json({'msg': 'uncomplete'});
+        var sql = 'insert into reader(user_id,article_id) values(?,?)';
+        db.queryArgs(sql, [params.user_id, params.article_id], function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
     }
 }
 
 
 function inbox_list(req, res){
+    console.log(req.body);
     if(!req.body.user_id)
         res.json({'msg': 'parameter error'});
     else{
@@ -88,7 +94,7 @@ function outbox_list(req, res){
 
 
 function create_article(req, res){
-    params = req.body;
+    var params = req.body;
     if(!params.author_id || !params.article_title || !params.article_content)
         res.json({'msg': 'parameter error'});
     else{
@@ -102,20 +108,29 @@ function create_article(req, res){
 }
 
 
-function insert_user(req, res){
-    params = req.body;
-    if(!params.user_id || !params.user_name || !params.user_head)
+function delete_article(req, res){
+    var params = req.body;
+    if(!params.article_id)
         res.json({'msg': 'parameter error'});
     else{
-        var sql = 'insert into user(id,name,head) values(?,?,?)';
-        var attrs = [params.user_id, params.user_name, params.user_head];
-        db.queryArgs(sql, attrs, function(err, result) {
+        var sql = 'delete from article where id=?';
+        db.queryArgs(sql, params.article_id, function(err, result) {
                 db.doReturn(res, 200, result);
             }
         );
     }
 }
 
+
+function insert_user(req, res){
+    var params = req.body;
+    console.log(params);
+    if(!params.avatarUrl || !params.js_code || !params.nickname)
+        res.json({'msg': 'parameter error'});
+    else{
+        Utils.get_openID(req, res, params.js_code);
+    }
+}
 
 
 function file_to_text(req, res){
@@ -131,5 +146,7 @@ module.exports = {
     inbox_list: inbox_list,
     outbox_list: outbox_list,
     create_article: create_article,
+    delete_article: delete_article,
+    insert_user: insert_user,
     file_to_text: file_to_text,
 };

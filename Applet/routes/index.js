@@ -7,6 +7,10 @@ router.get('/', function(req, res, next) {
   res.send('please use post');
 });
 
+router.get('/share', function(req, res, next) {
+	res.render('share',{});
+});
+
 router.post('/search_article', function(req, res, next) {
 	API.search_article(req, res)
 });
@@ -16,7 +20,7 @@ router.post('/search_user', function(req, res, next) {
 });
 
 router.post('/insert_user', function(req, res, next) {
-        API.insert_user(req, res)
+	API.insert_user(req, res)
 });
 
 router.post('/share_article', function(req, res, next) {
@@ -33,6 +37,10 @@ router.post('/outbox_list', function(req, res, next) {
 
 router.post('/create_article', function(req, res, next) {
 	API.create_article(req, res)
+});
+
+router.post('/delete_article', function(req, res, next) {
+	API.delete_article(req, res)
 });
 
 router.post('/file_to_text', function(req, res, next) {

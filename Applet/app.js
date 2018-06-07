@@ -3,14 +3,18 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var ejs = require('ejs');
 
 var indexRouter = require('./routes/index');
 
+var multer = require('multer')	// upload files
+var upload = multer({ dest: 'uploads/' })
 var app = express();
 
 // view engine setup
+app.engine('html', ejs.__express);
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'html');
 
 app.use(logger('dev'));
 app.use(express.json());
