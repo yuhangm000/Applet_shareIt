@@ -4,11 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var ejs = require('ejs');
-
+var bodyParser = require('body-parser'); //
 var indexRouter = require('./routes/index');
 
-var multer = require('multer')	// upload files
-var upload = multer({ dest: 'uploads/' })
 var app = express();
 
 // view engine setup
@@ -17,6 +15,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: false })); //add for upload files
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

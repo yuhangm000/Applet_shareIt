@@ -47,7 +47,9 @@ router.post('/get_article', function(req, res, next) {
 	API.get_article(req, res)
 });
 
-router.post('/file_to_text', function(req, res, next) {
+var multer = require('multer')  // upload files
+var upload = multer({ dest: 'uploads/' });
+router.post('/file_to_text', upload.single('file'),function(req, res, next) {
 	API.file_to_text(req, res)
 });
 

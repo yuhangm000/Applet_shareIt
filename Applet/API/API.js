@@ -1,6 +1,7 @@
 var db = require('../DAO/Connection');
 var Utils = require('./util');
 var fs = require("fs");
+var upload = require('../app');
 
 
 // return article_id, article_name, author, create_time
@@ -174,8 +175,16 @@ function get_article(req, res){
 
 
 function file_to_text(req, res){
-    console.log(req.file);
-    res.json({'msg': 'uncomplete'});
+    if(req.file.filename){
+        console.log(req.file);
+        var filename = req.file.filename;
+        filepath = "./uploads/" + filename;
+        var file = fs.readFileSync(filepath, 'ascii');
+        console.log(file);
+        fs.unlinkSync(filepath);
+    }
+    else
+        res.json({'msg': 'parameter error'});
 }
 
 
