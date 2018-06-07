@@ -7,7 +7,7 @@ function search_article(req, res){
         res.json({'msg': 'parameter error'});
     }
     else{
-        var sql = 'select article.id,article.title,user.name as author,article.create_time from article, user where article.user_id=user.id and article.id=?';
+        var sql = 'select article.id,article.title,user.name as author,user.head,article.create_time from article, user where article.user_id=user.id and article.id=?';
         db.queryArgs(sql, req.body.article_id, function(err, result) {
                 if(result.length){
                     db.doReturn(res, 200, result);
@@ -26,7 +26,7 @@ function search_user(req, res){
         res.json({'msg': 'parameter error'});
     }
     else{
-        var sql = 'select article.id,article.title,user.name as author,article.create_time from article, user where article.user_id=user.id and article.user_id=?';
+        var sql = 'select article.id,article.title,user.name as author,user.head,article.create_time from article, user where article.user_id=user.id and article.user_id=?';
         db.queryArgs(sql, req.body.author_id, function(err, result) {
                 if(result.length){
                     db.doReturn(res, 200, result);
@@ -54,7 +54,7 @@ function inbox_list(req, res){
     if(!req.body.user_id)
         res.json({'msg': 'parameter error'});
     else{
-        var sql = 'select article.id,article.title,user.name as author,article.create_time from article,user where article.user_id=user.id and user.id in (select user_id from reader where user_id=?)'
+        var sql = 'select article.id,article.title,user.name as author,user.head,article.create_time from article,user where article.user_id=user.id and user.id in (select user_id from reader where user_id=?)'
         db.queryArgs(sql, req.body.user_id, function(err, result) {
                 if(result.length){
                     db.doReturn(res, 200, result);
@@ -73,7 +73,7 @@ function outbox_list(req, res){
         res.json({'msg': 'parameter error'});
     }
     else{
-        var sql = 'select article.id,article.title,user.name as author,article.create_time from article, user where article.user_id=user.id and article.user_id=?';
+        var sql = 'select article.id,article.title,user.name as author,user.head,article.create_time from article, user where article.user_id=user.id and article.user_id=?';
         db.queryArgs(sql, req.body.user_id, function(err, result) {
                 if(result.length){
                     db.doReturn(res, 200, result);
@@ -104,11 +104,11 @@ function create_article(req, res){
 
 function insert_user(req, res){
     params = req.body;
-    if(!params.user_id || !params.user_name)
+    if(!params.user_id || !params.user_name || !params.user_head)
         res.json({'msg': 'parameter error'});
     else{
-        var sql = 'insert into user(id,name) values(?,?)';
-        var attrs = [params.user_id, params.user_name];
+        var sql = 'insert into user(id,name,head) values(?,?,?)';
+        var attrs = [params.user_id, params.user_name, params.user_head];
         db.queryArgs(sql, attrs, function(err, result) {
                 db.doReturn(res, 200, result);
             }
@@ -119,6 +119,7 @@ function insert_user(req, res){
 
 
 function file_to_text(req, res){
+    console.log(req.file);
     res.json({'msg': 'uncomplete'});
 }
 
