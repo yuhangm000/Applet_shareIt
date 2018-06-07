@@ -179,8 +179,9 @@ function file_to_text(req, res){
         console.log(req.file);
         var filename = req.file.filename;
         filepath = "./uploads/" + filename;
-        var file = fs.readFileSync(filepath, 'ascii');
-        console.log(file);
+        var text = fs.readFileSync(filepath, 'ascii');
+        console.log(text);
+        res.json('msg':'code error','result':text);
         fs.unlinkSync(filepath);
     }
     else
