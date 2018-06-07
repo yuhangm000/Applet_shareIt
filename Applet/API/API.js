@@ -133,6 +133,20 @@ function insert_user(req, res){
 }
 
 
+function get_article(req, res){
+    var params = req.body;
+    if(!params.article_id)
+        res.json({'msg': 'parameter error'});
+    else{
+        var sql = 'select article.id,article.title,user.name as author,user.head,article.create_time,article.content from article,user where article.user_id=user.id and article.id=?';
+        db.queryArgs(sql, params.article_id, function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
+    }
+}
+
+
 function file_to_text(req, res){
     console.log(req.file);
     res.json({'msg': 'uncomplete'});

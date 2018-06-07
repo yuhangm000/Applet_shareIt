@@ -43,6 +43,10 @@ router.post('/delete_article', function(req, res, next) {
 	API.delete_article(req, res)
 });
 
+router.post('/get_article', function(req, res, next) {
+	API.get_article(req, res)
+});
+
 router.post('/file_to_text', function(req, res, next) {
 	API.file_to_text(req, res)
 });
