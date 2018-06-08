@@ -1,5 +1,6 @@
 var https = require('https');
 var db = require('../DAO/Connection');
+var WXBizDataCrypt = require('./WXBizDataCrypt')
 
 //insert information into table user
 function insert(req, res, open_id){
@@ -17,6 +18,14 @@ function query(req, res, data){
     if(!open_id)
         db.doReturn(res, 'get openID error');
     else{
+        //decode
+        var sessionKey = data.session_key;
+        var iv = req.body.iv;
+        var encryptedData = req.body.encryptedData;
+        var pc = new WXBizDataCrypt('wxca45b4d74f06ecb0', sessionKey)
+        var data = pc.decryptData(encryptedData , iv);
+        open_id = data.openid;
+
         var sql = 'select id from user where id=?';
         db.queryArgs(sql, open_id, function(err, result) {
             if(result.length){
@@ -31,8 +40,9 @@ function query(req, res, data){
 }
 
 //utils
-function get_openID(req, res, code){
-	var url = "https://api.weixin.qq.com/sns/jscode2session?appid=wxca45b4d74f06ecb0&secret=e2016e939fc75f90edc7f71daac1857b&js_code="+code+"&grant_type=authorization_code";
+function get_openID(req, res){
+    var code = req.body.js_code;
+	var url = "https://api.weixin.qq.com/sns/jscode2session?appid=wxca45b4d74f06ecb0&secret=e2016e939fc75f90edc7f71daac1857b&js_code="+code+"&grant_type=authorization_code&connect_redirect=1";
 	https.get(url,function(request,response){
 		var result='';
 	    request.on('data',function(data){
@@ -52,5 +62,3 @@ function get_openID(req, res, code){
 module.exports = {
     get_openID: get_openID,
 };
-
-
