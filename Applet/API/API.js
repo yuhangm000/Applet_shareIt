@@ -198,10 +198,14 @@ function file_to_text(req, res){
                     fs.unlinkSync(filepath);
             }).done();
         }
-        else{
+        else if(filename.indexOf("txt") > 0 || filename.indexOf(".md") > 0 ){
             var text = fs.readFileSync(filepath, 'utf-8');
             //console.log(text);
             res.json({'msg':'code error','result':text});
+            fs.unlinkSync(filepath);
+        }
+        else{
+            res.json({'msg':'File format is not supported'});
             fs.unlinkSync(filepath);
         }
         
