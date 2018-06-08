@@ -57,6 +57,20 @@ function share_article(req, res){
 }
 
 
+function share_article_delete(req, res){
+    var params = req.body;
+    if(!params.user_id || !params.article_id)
+        res.json({'msg': 'parameter error'});
+    else{
+        var sql = 'delete from reader where user_id=? and article_id=?';
+        db.queryArgs(sql, [params.user_id, params.article_id], function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
+    }
+}
+
+
 function inbox_list(req, res){
     console.log(req.body);
     if(!req.body.user_id)
@@ -217,6 +231,7 @@ module.exports = {
     search_article: search_article,
     search_user: search_user,
     share_article: share_article,
+    share_article_delete: share_article_delete,
     inbox_list: inbox_list,
     outbox_list: outbox_list,
     create_article: create_article,
