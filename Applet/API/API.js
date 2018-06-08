@@ -174,18 +174,38 @@ function get_article(req, res){
 }
 
 
+var multiparty = require('multiparty');//parser file
+var mammoth = require("mammoth");// read docx
+
 function file_to_text(req, res){
-    if(req.file.filename){
-        console.log(req.file);
-        var filename = req.file.filename;
-        filepath = "./uploads/" + filename;
-        var text = fs.readFileSync(filepath, 'ascii');
-        console.log(text);
-        res.json('msg':'code error','result':text);
-        fs.unlinkSync(filepath);
-    }
-    else
-        res.json({'msg': 'parameter error'});
+    var form = new multiparty.Form();
+    form.uploadDir = "./uploads/";
+    form.parse(req, function(err, fields, files) {
+        file = files.file;
+        var filepath = file[0].path;
+        var filename = file[0].originalFilename;
+        console.log(filename);
+        //console.log(filepath);
+        //console.log(fields);
+        if(filename.indexOf("docx") > 0 ){
+            mammoth.extractRawText({path: filepath})
+            .then(function(result){  
+                    var text = result.value; // The raw text
+                    var text_raw = result; //have '\n'
+                    //console.log(text);
+                    //console.log(text_raw);
+                    res.json({'msg':'code error','result':text_raw});
+                    fs.unlinkSync(filepath);
+            }).done();
+        }
+        else{
+            var text = fs.readFileSync(filepath, 'utf-8');
+            //console.log(text);
+            res.json({'msg':'code error','result':text});
+            fs.unlinkSync(filepath);
+        }
+        
+    });
 }
 
 
