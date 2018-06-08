@@ -13,7 +13,7 @@ function insert(req, res, open_id){
 
 //query: Does this openID exist?
 function query(req, res, data){
-    var open_id = data.open_id;
+    var open_id = data.openid;
     if(!open_id)
         db.doReturn(res, 'get openID error');
     else{
@@ -52,3 +52,5 @@ function get_openID(req, res, code){
 module.exports = {
     get_openID: get_openID,
 };
+
+
