@@ -158,8 +158,7 @@ function delete_article(req, res){
 
 function insert_user(req, res){
     var params = req.body;
-    console.log(params);
-    if(!params.avatarUrl || !params.js_code || !params.nickname || !params.iv || !params.encryptedData)
+    if(!params.avatarUrl || !params.js_code || !params.nickname)
         res.json({'msg': 'parameter error'});
     else{
         Utils.get_openID(req, res);

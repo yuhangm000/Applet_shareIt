@@ -4,9 +4,9 @@ var WXBizDataCrypt = require('./WXBizDataCrypt')
 
 //insert information into table user
 function insert(req, res, open_id){
-	params = req.body;
+    var params = req.body;
     var sql = 'insert into user(id,name,head) values(?,?,?)';
-    var attrs = [open_id, params.user_name, params.avatarUrl];
+    var attrs = [open_id, params.nickname, params.avatarUrl];
     db.queryArgs(sql, attrs, function(err, result) {
         db.doReturn(res, 200, {'open_id':open_id});
     });
@@ -18,19 +18,11 @@ function query(req, res, data){
     if(!open_id)
         db.doReturn(res, 'get openID error');
     else{
-        //decode
-        var sessionKey = data.session_key;
-        var iv = req.body.iv;
-        var encryptedData = req.body.encryptedData;
-        var pc = new WXBizDataCrypt('wxca45b4d74f06ecb0', sessionKey)
-        var data = pc.decryptData(encryptedData , iv);
-        open_id = data.openId;
-
         var sql = 'select id from user where id=?';
         db.queryArgs(sql, open_id, function(err, result) {
             if(result.length){
             	//has been created
-                db.doReturn(res, 'this user has assigned', {'open_id': open_id});
+		db.doReturn(res, 'this user has assigned', {'open_id': open_id});
             }
             else{
                 insert(req, res, open_id);
@@ -46,7 +38,6 @@ function get_openID(req, res){
 	https.get(url,function(request,response){
 		var result='';
 	    request.on('data',function(data){
-            console.log(123);
 	        result+=data;
 	    });  
 	    request.on('end',function(){ 
