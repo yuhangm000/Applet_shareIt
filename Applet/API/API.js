@@ -57,6 +57,20 @@ function share_article(req, res){
 }
 
 
+function share_article_delete(req, res){
+    var params = req.body;
+    if(!params.user_id || !params.article_id)
+        res.json({'msg': 'parameter error'});
+    else{
+        var sql = 'delete from reader where user_id=? and article_id=?';
+        db.queryArgs(sql, [params.user_id, params.article_id], function(err, result) {
+                db.doReturn(res, 200, result);
+            }
+        );
+    }
+}
+
+
 function inbox_list(req, res){
     console.log(req.body);
     if(!req.body.user_id)
@@ -174,18 +188,45 @@ function get_article(req, res){
 }
 
 
+var multiparty = require('multiparty');//parser file
+var mammoth = require("mammoth");// read docx
+
 function file_to_text(req, res){
-    if(req.file.filename){
-        console.log(req.file);
-        var filename = req.file.filename;
-        filepath = "./uploads/" + filename;
-        var text = fs.readFileSync(filepath, 'ascii');
-        console.log(text);
-        res.json({'msg':'code error','result':text});
-        fs.unlinkSync(filepath);
-    }
-    else
-        res.json({'msg': 'parameter error'});
+    var form = new multiparty.Form();
+    form.uploadDir = "./uploads/";
+    form.parse(req, function(err, fields, files) {
+        file = files.file;
+	if(!file){
+	    res.json({'msg':'error'});
+	}
+        var filepath = file[0].path;
+        var filename = file[0].originalFilename;
+        console.log(filename);
+        //console.log(filepath);
+        //console.log(fields);
+        if(filename.indexOf("docx") > 0 ){
+            mammoth.extractRawText({path: filepath})
+            .then(function(result){  
+                    var text = result.value; // The raw text
+                    var text_raw = result; //have '\n'
+                    //console.log(text);
+                    //console.log(text_raw);
+                    res.json({'msg':'code error','result':text_raw});
+                    fs.unlinkSync(filepath);
+            }).done();
+        }
+        else if(filename.indexOf("txt") > 0 || filename.indexOf(".md") > 0 ){
+            var text = fs.readFileSync(filepath, 'utf-8');
+            //console.log(text);
+            res.json({'msg':'code error','result':text});
+            fs.unlinkSync(filepath);
+        }
+        else{
+            res.json({'msg':'File format is not supported'});
+            fs.unlinkSync(filepath);
+        }
+        
+    });
 }
 
 
@@ -193,6 +234,7 @@ module.exports = {
     search_article: search_article,
     search_user: search_user,
     share_article: share_article,
+    share_article_delete: share_article_delete,
     inbox_list: inbox_list,
     outbox_list: outbox_list,
     create_article: create_article,
