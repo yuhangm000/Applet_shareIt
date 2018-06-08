@@ -24,7 +24,7 @@ function query(req, res, data){
         var encryptedData = req.body.encryptedData;
         var pc = new WXBizDataCrypt('wxca45b4d74f06ecb0', sessionKey)
         var data = pc.decryptData(encryptedData , iv);
-        open_id = data.openid;
+        open_id = data.openId;
 
         var sql = 'select id from user where id=?';
         db.queryArgs(sql, open_id, function(err, result) {
