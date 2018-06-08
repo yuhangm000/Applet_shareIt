@@ -196,8 +196,7 @@ function file_to_text(req, res){
     form.parse(req, function(err, fields, files) {
         file = files.file;
 	if(!file){
-	    res.json({'msg':'error'});
-	}
+            res.json({'msg':'File error'});
         var filepath = file[0].path;
         var filename = file[0].originalFilename;
         console.log(filename);
