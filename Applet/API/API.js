@@ -48,11 +48,31 @@ function share_article(req, res){
     if(!params.user_id || !params.article_id)
         res.json({'msg': 'parameter error'});
     else{
-        var sql = 'insert into reader(user_id,article_id) values(?,?)';
-        db.queryArgs(sql, [params.user_id, params.article_id], function(err, result) {
-                db.doReturn(res, 200, result);
+        var sql2 = 'select user_id from article where id=?';
+        db.queryArgs(sql2, params.article_id, function(err, result) {
+                if(result){
+                    saved_user = result[0].user_id;
+                    if(saved_user == params.user_id){
+                        //myself
+                        db.doReturn(res, 200);
+                    }
+                    else{
+                        //others
+                        var sql = 'insert into reader(user_id,article_id) values(?,?)';
+                        db.queryArgs(sql, [params.user_id, params.article_id], function(err, result) {
+                                if(result)
+                                    db.doReturn(res, 200, result);
+                                else
+                                    db.doReturn(res, 'share failed');
+                        });
+                    }
+                }
+                else{
+                    db.doReturn(res, 'this article does not exist');
+                }
             }
         );
+        
     }
 }
 
