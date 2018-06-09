@@ -1,6 +1,5 @@
 var https = require('https');
 var db = require('../DAO/Connection');
-var WXBizDataCrypt = require('./WXBizDataCrypt')
 
 //insert information into table user
 function insert(req, res, open_id){

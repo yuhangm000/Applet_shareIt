@@ -176,7 +176,8 @@ function get_article(req, res){
                 var path = result[0].content;
                 fs.readFile(path, 'utf-8', function(err,data){
                     if(err){ 
-                        console.log(err); 
+                        console.log(err);
+			db.doReturn(res,'this article does not exist, sorry'); 
                     }else{ 
                         db.doReturn(res, 200, data);
                     } 
