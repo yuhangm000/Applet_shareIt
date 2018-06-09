@@ -134,6 +134,51 @@ function create_article(req, res){
 }
 
 
+function update_article(req, res){
+    var params = req.body;
+    if(!params.article_id || !params.author_id || !params.article_title || !params.article_content)
+        res.json({'msg': 'parameter error'});
+    else{
+        //delete old file
+        var sql2 = 'select content from article where id=?';
+        db.queryArgs(sql2, params.article_id, function(err, result) {
+                if(result){
+                    var path = result[0].content;
+                    fs.exists(path, function(exists) {  
+                        if(exists){
+                            fs.unlinkSync(path);
+                        }
+                    });  
+                }
+                else
+                    db.doReturn(res,'update failed');
+            }
+        );
+
+        //update database
+        article_content = params.article_content;
+        article_content_path = "./articles/" + params.author_id + "_" + Date.now() + ".txt";//article path
+        var sql = 'update article set title=?,content=?,create_time=now() where id=?';
+        var attrs = [params.article_title, article_content_path, params.article_id];
+        db.queryArgs(sql, attrs, function(err, result) {
+                if(result)
+                    db.doReturn(res, 200);
+                else
+                    db.doReturn(res,'update failed');
+            }
+        );
+        //write content into file; save path in db
+        fs.writeFile(article_content_path, article_content, function(err){
+            if(err){
+                console.log(err);
+            }else{
+                console.log("file writes sucess!!");
+            }
+        });
+    }
+}
+
+
 function delete_article(req, res){
     var params = req.body;
     if(!params.article_id)
@@ -236,6 +281,7 @@ module.exports = {
     inbox_list: inbox_list,
     outbox_list: outbox_list,
     create_article: create_article,
+    update_article: update_article,
     delete_article: delete_article,
     insert_user: insert_user,
     get_article: get_article,

@@ -43,6 +43,10 @@ router.post('/create_article', function(req, res, next) {
 	API.create_article(req, res)
 });
 
+router.post('/update_article', function(req, res, next) {
+	API.update_article(req, res)
+});
+
 router.post('/delete_article', function(req, res, next) {
 	API.delete_article(req, res)
 });
